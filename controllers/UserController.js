@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const { registerValidator, changePasswordValidator } = require('../validations/auth');
+const { ObjectId } = require('mongodb');
 
 class UserController {
   // Get all
@@ -25,10 +26,40 @@ class UserController {
   
   // Get by id
   getById(req, res) {
-    const myQuery = { id: req.params.id, active: true };
+    const myQuery = { _id: ObjectId(req.params._id), active: true };
     User.findOne(myQuery)
-      .then((user) => res.json(user))
+      .then((user) => {
+        if (user)
+          return res.json({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            avatar: user.avatar,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          });
+        return res.status(404).json({
+          message: 'User not founded!'
+        })
+      })
       .catch((err) => res.status(400).json('Error: ' + err.message));
+  }
+
+  // update
+  async update(req, res) {
+    User.findOne({ _id: ObjectId(req.body._id) }).then(user => {
+      if (!user) return res.status(404).json({ message: 'User not founded!' });
+      user.firstName = req.body.firstName;
+      user.lastName = req.body.lastName;
+      user.avatar = req.body.avatar;
+      user.email = req.body.email;
+      user.save((err) => {
+        if (err) return res.status(500).json({ message: err.message });
+        else res.status(200).json({ message: 'Updated successful!' });
+      });
+    }).catch(err => res.status(422).json({ message: 'Cannot find' }));
   }
 
   // Login
@@ -40,7 +71,8 @@ class UserController {
 
     if (!checkPassword) return res.status(422).json('Username or Password is not correct');
     
-    return res.status(200).json(`User ${user.username} has logged in`);
+    const message = `User ${user.username} logging...`;
+    return res.json({data: user, message});
   }
   
   // Register

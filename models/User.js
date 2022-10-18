@@ -17,6 +17,17 @@ const userSchema = new mongoose.Schema({
         min: 6,
         max: 225
     },
+    avatar: {
+        type: String,
+    },
+    firstName: {
+        type: String,
+        max: 225,
+    },
+    lastName: {
+        type: String,
+        max: 225,
+    },
     password: {
         type: String,
         required: true,

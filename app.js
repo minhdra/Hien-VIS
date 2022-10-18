@@ -4,12 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
+const cors = require('cors');
+
 var dotenv = require('dotenv');
 dotenv.config();
 
 var directionRoute = require('./routes/index');
 
 var app = express();
+
+app.use(cors());
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri);
