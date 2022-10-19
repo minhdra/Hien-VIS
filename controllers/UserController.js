@@ -7,20 +7,22 @@ const { ObjectId } = require('mongodb');
 class UserController {
   // Get all
   search(req, res) {
-    let page = req.body.page || 1;
-    let pageSize = req.body.pageSize || 10;
+    // let page = req.body.page || 1;
+    // let pageSize = req.body.pageSize || 10;
     let sort = req.body.sort;
     const myQuery = {
       id: { $exists: true },
       username: { $regex: `.*${req.body.username}.*`, $options: 'i' },
       email: { $regex: `.*${req.body.email}.*`, $options: 'i' },
+      firstName: { $regex: `.*${req.body.firstName}.*`, $options: 'i' },
+      lastName: { $regex: `.*${req.body.lastName}.*`, $options: 'i' },
       active: true,
     };
     User.find(myQuery)
       .sort(sort ? { username: sort } : '')
-      .skip(page * pageSize - pageSize)
-      .limit(pageSize)
-      .then((user) => res.json(user))
+      // .skip(page * pageSize - pageSize)
+      // .limit(pageSize)
+      .then((users) => res.json(users))
       .catch((err) => res.status(400).json('Error: ' + err.message));
   }
   
@@ -31,6 +33,7 @@ class UserController {
       .then((user) => {
         if (user)
           return res.json({
+            _id: user._id,
             id: user.id,
             username: user.username,
             email: user.email,
@@ -84,15 +87,15 @@ class UserController {
         const newId = data.length > 0 ? data[0].id + 1 : 1;
         const { error } = registerValidator(req.body);
 
-        if (error) return res.status(422).send(error.details[0].message);
+        if (error) return res.status(422).json({ message: error.details[0].message });
 
         const checkUsernameExist = await User.findOne({ username: req.body.username });
 
-        if (checkUsernameExist) return res.status(422).send('Username is exist');
+        if (checkUsernameExist) return res.status(422).json({ message: 'Username is exist' });
 
         const checkEmailExist = await User.findOne({ email: req.body.email });
 
-        if (checkEmailExist) return res.status(422).send('Email is exist');
+        if (checkEmailExist) return res.status(422).json({ message: 'Email is exist' });
 
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(req.body.password, salt);
@@ -100,6 +103,9 @@ class UserController {
         const user = new User({
           id: newId,
           username: req.body.username,
+          firstName: req.body.firstName ?? '',
+          lastName: req.body.lastName ?? '',
+          avatar: req.body.avatar ?? '',
           email: req.body.email,
           password: hashPassword,
         });

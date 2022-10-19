@@ -5,6 +5,8 @@ const registerValidator = (data) => {
         username: Joi.string().min(6).max(225).required(),
         email: Joi.string().min(6).max(225).required().email(),
         password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{6,20}$')).required(),
+    }).messages({
+        'string.pattern.base': 'Your {#label} length must be greater than 6 characters. Password cannot contain a special character.'
     })
 
     return rule.validate(data);
