@@ -128,7 +128,7 @@ class UserController {
 
     const { error } = changePasswordValidator(req.body);
 
-    if (error) return res.status(422).send(error.details[0].message);
+    if (error) return res.status(422).json(error.details[0].message);
     
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
