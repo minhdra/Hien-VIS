@@ -103,9 +103,9 @@ class UserController {
         const user = new User({
           id: newId,
           username: req.body.username,
-          firstName: req.body.firstName ?? '',
-          lastName: req.body.lastName ?? '',
-          avatar: req.body.avatar ?? '',
+          firstName: req.body.firstName ? req.body.firstName : '',
+          lastName: req.body.lastName ? req.body.lastName : '',
+          avatar: req.body.avatar ? req.body.avatar : '',
           email: req.body.email,
           password: hashPassword,
         });

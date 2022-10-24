@@ -1,5 +1,3 @@
-const path = require('path');
-const Resize = require('../middleware/Resize');
 const fs = require('fs');
 
 class ImageController {

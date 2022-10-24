@@ -10,6 +10,7 @@ class SlideController {
     const myQuery = {
       id: { $exists: true },
       title: { $regex: `.*${req.body.title}.*`, $options: 'i' },
+      contentLink: { $regex: `.*${req.body.contentLink}.*`, $options: 'i' },
       redirectTo: { $regex: `.*${req.body.redirectTo}.*`, $options: 'i' },
       active: true,
     };
@@ -48,7 +49,7 @@ class SlideController {
           id: newId,
           title: req.body.title,
           backgroundImage: req.body.backgroundImage,
-          caption: req.body.caption,
+          contentLink: req.body.contentLink,
           redirectTo: req.body.redirectTo,
         });
         slide.save((err, slide) => {
@@ -70,7 +71,7 @@ class SlideController {
         if (!slide)
           return res.status(404).json({ message: 'Slide not founded!' });
         slide.title = req.body.title;
-        slide.caption = req.body.caption;
+        slide.contentLink = req.body.contentLink;
         slide.backgroundImage = req.body.backgroundImage;
         slide.redirectTo = req.body.redirectTo;
         slide.save((err) => {

@@ -14,12 +14,13 @@ const slideSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    redirectTo: {
+    contentLink: {
         type: String,
         require: true,
     },
-    caption: {
+    redirectTo: {
         type: String,
+        require: true,
     },
     active: {
         type: Boolean,
