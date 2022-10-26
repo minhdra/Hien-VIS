@@ -79,6 +79,37 @@ class ServiceController {
       .catch((err) => res.status(400).json('Error: ' + err.message));
   }
 
+  // Get by path
+  getByPath(req, res) {
+    const myQuery = { path: req.params.path, active: true };
+    let aggregateQuery = [
+      { $match: myQuery },
+      {
+        $graphLookup: {
+          from: 'users', // Match with to collection what want to search
+          startWith: '$createdId', // Name of array (origin)
+          connectFromField: 'createdId', // Field of array
+          connectToField: '_id', // from which field it will match
+          as: 'createdId', // Add or replace field in origin collection
+        },
+      },
+      {
+        $graphLookup: {
+          from: 'users', // Match with to collection what want to search
+          startWith: '$updatedId', // Name of array (origin)
+          connectFromField: 'updatedId', // Field of array
+          connectToField: '_id', // from which field it will match
+          as: 'updatedId', // Add or replace field in origin collection
+        },
+      },
+    ];
+    Service.aggregate(aggregateQuery)
+      // .skip(page * pageSize - pageSize)
+      // .limit(pageSize)
+      .then((services) => res.json(services[0]))
+      .catch((err) => res.status(400).json('Error: ' + err.message));
+  }
+
   // Create
   create(req, res) {
     let service;
@@ -91,11 +122,12 @@ class ServiceController {
         service = new Service({
           id: newId,
           title: req.body.title,
+          path: req.body.path,
+          summary: req.body.summary,
           thumbnail: req.body.thumbnail,
           content: req.body.content,
           createdId: _id,
           updatedId: _id,
-          listNameImages: req.body.listNameImages,
         });
         service.save((err, service) => {
           if (err) {
@@ -116,11 +148,12 @@ class ServiceController {
         if (!service)
           return res.status(404).json({ message: 'Service not founded!' });
         service.title = req.body.title;
+        service.path = req.body.path;
+        service.summary = req.body.summary;
         service.content = req.body.content;
         service.thumbnail = req.body.thumbnail;
         service.createdId = ObjectId(req.body.createdId);
         service.updatedId = ObjectId(req.body.updatedId);
-        service.listNameImages = req.body.listNameImages;
         service.save((err) => {
           if (err) return res.status(500).json({ message: err.message });
           else res.status(200).json({ message: 'Updated successful!' });

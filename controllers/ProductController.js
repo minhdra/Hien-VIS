@@ -79,6 +79,37 @@ class ProductController {
       .catch((err) => res.status(400).json('Error: ' + err.message));
   }
 
+  // Get by path
+  getByPath(req, res) {
+    const myQuery = { path: req.params.path, active: true };
+    let aggregateQuery = [
+      { $match: myQuery },
+      {
+        $graphLookup: {
+          from: 'users', // Match with to collection what want to search
+          startWith: '$createdId', // Name of array (origin)
+          connectFromField: 'createdId', // Field of array
+          connectToField: '_id', // from which field it will match
+          as: 'createdId', // Add or replace field in origin collection
+        },
+      },
+      {
+        $graphLookup: {
+          from: 'users', // Match with to collection what want to search
+          startWith: '$updatedId', // Name of array (origin)
+          connectFromField: 'updatedId', // Field of array
+          connectToField: '_id', // from which field it will match
+          as: 'updatedId', // Add or replace field in origin collection
+        },
+      },
+    ];
+    Product.aggregate(aggregateQuery)
+      // .skip(page * pageSize - pageSize)
+      // .limit(pageSize)
+      .then((products) => res.json(products[0]))
+      .catch((err) => res.status(400).json('Error: ' + err.message));
+  }
+
   // Create
   create(req, res) {
     let product;
@@ -91,11 +122,11 @@ class ProductController {
         product = new Product({
           id: newId,
           name: req.body.name,
+          path: req.body.path,
           thumbnail: req.body.thumbnail,
           content: req.body.content,
           createdId: _id,
           updatedId: _id,
-          listNameImages: req.body.listNameImages,
         });
         product.save((err, product) => {
           if (err) {
@@ -116,11 +147,11 @@ class ProductController {
         if (!product)
           return res.status(404).json({ message: 'Product not founded!' });
         product.name = req.body.name;
+        product.path = req.body.path;
         product.content = req.body.content;
         product.thumbnail = req.body.thumbnail;
         product.createdId = ObjectId(req.body.createdId);
         product.updatedId = ObjectId(req.body.updatedId);
-        product.listNameImages = req.body.listNameImages;
         product.save((err) => {
           if (err) return res.status(500).json({ message: err.message });
           else res.status(200).json({ message: 'Updated successful!' });

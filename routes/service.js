@@ -3,7 +3,9 @@ var router = express.Router();
 var ServiceController = require('../controllers/ServiceController');
 
 /* GET users listing. */
-router.get('/:_id', ServiceController.getById);
+router.get('/getById/:_id', ServiceController.getById);
+router.get('/getByPath/:path', ServiceController.getByPath);
+router.get('/:path', ServiceController.getByPath);
 router.post('/search', ServiceController.search);
 router.post('/create', ServiceController.create);
 router.post('/delete', ServiceController.delete);

@@ -10,6 +10,16 @@ const serviceSchema = new mongoose.Schema({
         required: true,
         max: 255
     },
+    summary: {
+        type: String,
+        required: true,
+        max: 555
+    },
+    path: {
+        type: String,
+        required: true,
+        max: 255
+    },
     thumbnail: {
         type: String,
         require: true,
@@ -25,9 +35,6 @@ const serviceSchema = new mongoose.Schema({
     updatedId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-    },
-    listNameImages: {
-        type: Array,
     },
     active: {
         type: Boolean,
