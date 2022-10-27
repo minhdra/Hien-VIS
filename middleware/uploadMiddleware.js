@@ -5,9 +5,7 @@ const multer = require('multer');
 
 // SET STORAGE
 var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/images');
-  },
+  destination: './public/images',
   filename: function (req, file, cb) {
     let ext = '';
     switch (file.mimetype) {
@@ -18,7 +16,7 @@ var storage = multer.diskStorage({
         ext = '.png';
         break;
     }
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const uniqueSuffix = uuidv4();
     cb(null, file.fieldname + '-' + uniqueSuffix + ext);
   },
 });
