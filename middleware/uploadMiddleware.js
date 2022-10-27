@@ -5,7 +5,7 @@ const multer = require('multer');
 
 // SET STORAGE
 var storage = multer.diskStorage({
-  destination: './uploads',
+  destination: './public/images',
   filename: function (req, file, cb) {
     let ext = '';
     switch (file.mimetype) {
