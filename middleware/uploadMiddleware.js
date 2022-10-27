@@ -19,7 +19,7 @@ var storage = multer.diskStorage({
         break;
     }
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + ext);
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
   },
 });
 
