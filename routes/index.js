@@ -3,6 +3,7 @@ const productRouter = require('./product');
 const imageRouter = require('./image');
 const slideRouter = require('./slide');
 const serviceRouter = require('./service');
+const mailRouter = require('./email');
 
 function directionRoute(app) {
   app.use('/api/auth', authRouter);
@@ -10,6 +11,7 @@ function directionRoute(app) {
   app.use('/api/slide', slideRouter);
   app.use('/api/image', imageRouter);
   app.use('/api/service', serviceRouter);
+  app.use('/api/contact', mailRouter);
 }
 
 module.exports = directionRoute;

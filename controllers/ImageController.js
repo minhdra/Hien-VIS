@@ -2,8 +2,16 @@ const fs = require('fs');
 
 class ImageController {
   uploadSingle(req, res) {
-    
     return res.status(200).json(req.file);
+  }
+
+  uploadSingleCloudinary(req, res, next) {
+    if (!req.file) {
+      next(new Error('No file uploaded!'));
+      return;
+    }
+   
+    return res.json({ secure_url: req.file.path });
   }
 
   remove (req, res) {
