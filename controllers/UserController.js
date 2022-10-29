@@ -74,8 +74,10 @@ class UserController {
 
     if (!checkPassword) return res.status(422).json('Username or Password is not correct');
     
+    const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET, { expiresIn: 60 * 60 * 24 });
+    res.header('auth-token', token);
     const message = `User ${user.username} logging...`;
-    return res.json({data: user, message});
+    return res.json({data: user, token, message});
   }
   
   // Register
