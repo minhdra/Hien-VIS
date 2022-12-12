@@ -14,22 +14,22 @@ class ImageController {
     return res.json({ secure_url: req.file.path });
   }
 
-  remove (req, res) {
-    const fileName = req.body.name;
-    const directoryPath = __basedir + "/public/images/";
+  // remove (req, res) {
+  //   const fileName = req.body.name;
+  //   const directoryPath = __basedir + "/public/images/";
   
-    fs.unlink(directoryPath + fileName, (err) => {
-      if (err) {
-        return res.status(500).json({
-          message: "Could not delete the file. " + err,
-        });
-      }
+  //   fs.unlink(directoryPath + fileName, (err) => {
+  //     if (err) {
+  //       return res.status(500).json({
+  //         message: "Could not delete the file. " + err,
+  //       });
+  //     }
   
-      return res.status(200).json({
-        message: "File is deleted.",
-      });
-    });
-  };
+  //     return res.status(200).json({
+  //       message: "File is deleted.",
+  //     });
+  //   });
+  // };
 }
 
 module.exports = new ImageController();
